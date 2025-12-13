@@ -1,0 +1,10 @@
+Procted Pages:-
+    Admin Page, Create Vote Page, Manage Vote Page, Profile Page
+
+Unprotected Pages:-
+    Landing Page, Home Page, Vote/:id Page
+
+
+Routes
+
+Landing Page -> Admin Page -> Create Vote Page -> Manage Vote Page
