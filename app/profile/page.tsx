@@ -1,49 +1,19 @@
 "use client";
 import DashboardSkeleton from "@/app/profile/_components/Skeleton";
 import VoteCard from "@/app/profile/_components/VoterCard";
+import { getUserProfileData } from "@/services/profile";
 import { UserProfile, VoteSummary } from "@/types";
-import delay from "@/utils/delay";
 import { useEffect, useState } from "react";
 
-
-// ---------------- MOCK API ----------------
-async function fetchProfile(): Promise<UserProfile> {
-  await delay(400);
-  return {
-    id: "user_1",
-    name: "Alex Johnson",
-    email: "alex@example.com",
-    joinedAt: "2024-02-12",
-    avatar: "https://api.dicebear.com/8.x/identicon/svg?seed=voteanon",
-  };
-}
-
-async function fetchCreatedVotes(): Promise<VoteSummary[]> {
-  await delay(500);
-  return [
-    {
-      id: "vote_1",
-      question: "Cats vs Dogs?",
-      totalVotes: 132,
-      createdAt: "2025-01-03",
-    },
-    {
-      id: "vote_2",
-      question: "Dark Mode or Light Mode?",
-      totalVotes: 89,
-      createdAt: "2025-01-10",
-    },
-  ];
-}
-
-// ---------------- PAGE ----------------
 export default function ProfileDashboard() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [votes, setVotes] = useState<VoteSummary[]>([]);
 
   useEffect(() => {
-    fetchProfile().then(setProfile);
-    fetchCreatedVotes().then(setVotes);
+    getUserProfileData().then(({userCreatedVotes, profileData}) => {
+      setProfile(profileData)
+      setVotes(userCreatedVotes)
+    })
   }, []);
 
   if (!profile) return <DashboardSkeleton />;

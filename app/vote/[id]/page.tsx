@@ -2,48 +2,16 @@
 import toast from "@/components/Toast";
 import VoteCard from "@/components/VoteCard";
 import Skeleton from "@/components/VoteCardSkeleton";
+import { getVoteData, publicVote } from "@/services/vote";
 import { VoteOption, VoteSession } from "@/types";
-import delay from "@/utils/delay";
 import { useEffect, useState, useTransition } from "react";
-
-// ---------------- MOCK API ----------------
-
-async function fetchVoteSession(): Promise<VoteSession> {
-  await delay(500);
-  return {
-    id: "vote_123",
-    question: "This or That?",
-    hasVoted: false,
-    options: [
-      {
-        id: "A",
-        label: "Option A",
-        type: "text",
-        value: "Cats 🐱",
-        votes: 1398,
-      },
-      {
-        id: "B",
-        label: "Option B",
-        type: "text",
-        value: "Dogs 🐶",
-        votes: 500,
-      },
-    ],
-  };
-}
-
-async function submitVote(optionId: string) {
-  await delay(400);
-  return { success: true, optionId };
-}
 
 export default function VotePage() {
   const [data, setData] = useState<VoteSession | null>(null);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    fetchVoteSession().then(setData);
+    getVoteData("vote_123").then(({data}) => setData(data));
   }, []);
 
   if (!data) return <Skeleton />;
@@ -55,7 +23,7 @@ export default function VotePage() {
     if (data.hasVoted) return;
 
     startTransition(async () => {
-      const res = await submitVote(id);
+      const res = await publicVote("vote_123",id);
       if (!res.success) return;
 
       setData((prev) =>

@@ -1,54 +1,25 @@
 "use client";
-
 import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { AdminVote } from "@/types";
 import toast from "@/components/Toast";
-import delay from "@/utils/delay";
 import Skeleton from "@/app/admin/_components/AdminSkeleton";
+import { deleteAdminVote, endAdminVote, getAdminVoteData } from "@/services/admin/vote";
 
 
-// ---------------- MOCK API ----------------
-async function fetchAdminVote(): Promise<AdminVote> {
-  await delay(400);
-  return {
-    id: "vote_123",
-    question: "Cats vs Dogs?",
-    status: "running",
-    totalVotes: 134,
-    createdAt: "2025-01-05",
-    endsAt: "2025-01-20",
-    options: [
-      { id: "A", label: "Cats 🐱", votes: 72 },
-      { id: "B", label: "Dogs 🐶", votes: 62 },
-    ],
-  };
-}
-
-async function endVote() {
-  await delay(300);
-  return { success: true };
-}
-
-async function deleteVote() {
-  await delay(300);
-  return { success: true };
-}
-
-// ---------------- PAGE ----------------
 export default function AdminVotePage() {
   const [vote, setVote] = useState<AdminVote | null>(null);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    fetchAdminVote().then(setVote);
+    getAdminVoteData("vote_123").then(({data}) => setVote(data));
   }, []);
 
   if (!vote) return <Skeleton />;
 
   const endHandler = () => {
     startTransition(async () => {
-      const res = await endVote();
+      const res = await endAdminVote("vote_123");
       if (res.success) {
         setVote({ ...vote, status: "ended" });
         toast("Vote has been ended");
@@ -60,7 +31,7 @@ export default function AdminVotePage() {
     if (!confirm("Are you sure you want to delete this vote?")) return;
 
     startTransition(async () => {
-      const res = await deleteVote();
+      const res = await deleteAdminVote("vote_123");
       if (res.success) {
         toast("Vote deleted");
         // router.push('/dashboard') later

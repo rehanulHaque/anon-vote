@@ -3,46 +3,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import StatCard from "@/app/admin/_components/StatCard";
 import FilterButton from "@/components/FilterButton";
-import delay from "@/utils/delay";
 import { AdminVoteItem, VoteStatus } from "@/types";
+import { getAdminData } from "@/services/admin";
 
-// ---------------- MOCK API ----------------
-async function fetchAdminVotes(): Promise<AdminVoteItem[]> {
-  await delay(500);
-  return [
-    {
-      id: "vote_1",
-      question: "Cats vs Dogs?",
-      status: "running",
-      totalVotes: 124,
-      createdAt: "2025-01-02",
-      endsAt: "2025-01-20",
-    },
-    {
-      id: "vote_2",
-      question: "Dark Mode or Light Mode?",
-      status: "running",
-      totalVotes: 89,
-      createdAt: "2025-01-05",
-      endsAt: "2025-01-18",
-    },
-    {
-      id: "vote_3",
-      question: "Tabs or Spaces?",
-      status: "ended",
-      totalVotes: 342,
-      createdAt: "2024-12-10",
-    },
-  ];
-}
 
-// ---------------- PAGE ----------------
 export default function AdminDashboardPage() {
   const [votes, setVotes] = useState<AdminVoteItem[]>([]);
   const [filter, setFilter] = useState<"all" | VoteStatus>("all");
 
   useEffect(() => {
-    fetchAdminVotes().then(setVotes);
+    getAdminData().then(({data}) => setVotes(data));
   }, []);
 
   const filteredVotes = votes.filter((v) =>

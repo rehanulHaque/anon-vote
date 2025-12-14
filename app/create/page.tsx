@@ -2,20 +2,9 @@
 import Field from "@/components/Field";
 import OptionEditor from "@/components/OptionEditor";
 import toast from "@/components/Toast";
-import { CreateVotePayload, OptionType } from "@/types";
-import delay from "@/utils/delay";
+import { createVote } from "@/services/create";
+import { OptionType } from "@/types";
 import { useState, useTransition } from "react";
-
-// ---------------- MOCK API ----------------
-// Replace with real server action / API route
-async function createVote(payload: CreateVotePayload) {
-  await delay(600);
-  return {
-    success: true,
-    voteId: "vote_123",
-    shareUrl: "/vote/vote_123",
-  };
-}
 
 export default function CreateVotePage() {
   const [question, setQuestion] = useState("This or That?");

@@ -2,46 +2,15 @@
 import { useEffect, useState } from "react";
 import { VoteItem, VoteStatus } from "@/types";
 import VoteCard from "@/app/home/_components/VoteCard";
-import delay from "@/utils/delay";
 import FilterButton from "@/components/FilterButton";
+import { getHomeData } from "@/services/home";
 
-// ---------------- MOCK API ----------------
-async function fetchVotes(): Promise<VoteItem[]> {
-  await delay(500);
-  return [
-    {
-      id: "vote_1",
-      question: "Cats vs Dogs?",
-      status: "running",
-      totalVotes: 124,
-      endsAt: "2025-01-20",
-      createdBy: "user_1",
-    },
-    {
-      id: "vote_2",
-      question: "Dark Mode or Light Mode?",
-      status: "running",
-      totalVotes: 89,
-      endsAt: "2025-01-18",
-      createdBy: "user_2",
-    },
-    {
-      id: "vote_3",
-      question: "Tabs or Spaces?",
-      status: "ended",
-      totalVotes: 342,
-      createdBy: "user_1",
-    },
-  ];
-}
-
-// ---------------- PAGE ----------------
 export default function HomeFeedPage() {
   const [votes, setVotes] = useState<VoteItem[]>([]);
   const [filter, setFilter] = useState<"all" | VoteStatus>("all");
 
   useEffect(() => {
-    fetchVotes().then(setVotes);
+    getHomeData().then(({ data }) => setVotes(data));
   }, []);
 
   const filteredVotes = votes.filter((v) =>
